@@ -1,0 +1,154 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html, body, #app {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #F5F4EF;
+  color: #20221F;
+}
+body {
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ---------- 通用 ---------- */
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, opacity .15s;
+}
+.btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+.btn.primary { background: #1F6F5C; color: #fff; }
+.btn.primary:hover { background: #185844; }
+.btn.ghost { background: #EFEFEA; color: #20221F; }
+.btn.ghost:hover { background: #E2E3DC; }
+.btn.danger { background: #B4553F; color: #fff; }
+.btn.danger:hover { background: #9a443a; }
+.btn.sm { padding: 6px 14px; font-size: 12px; }
+
+input {
+  border: 1px solid #D9DAD3;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  background: #FBFBF7;
+  color: #20221F;
+  outline: none;
+  transition: border-color .15s;
+}
+input:focus { border-color: #1F6F5C; }
+
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #8A8F86;
+  letter-spacing: .05em;
+  margin-bottom: 8px;
+}
+
+/* ---------- 登录页 ---------- */
+.login-wrap {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 20% -10%, rgba(255,255,255,.9), transparent 40%), #F5F4EF;
+}
+.login-card {
+  width: 380px;
+  background: #fff;
+  border: 1px solid #E3E4DE;
+  border-radius: 16px;
+  padding: 40px 36px;
+  box-shadow: 0 14px 40px rgba(42,49,43,.08);
+}
+.brand { text-align: center; margin-bottom: 28px; }
+.brand-mark {
+  width: 52px; height: 52px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg,#2a7a63,#1f6f5c);
+  color: #fff;
+  font-size: 26px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: "Songti SC", serif;
+}
+.brand-title { font-size: 26px; font-weight: 700; font-family: "Songti SC", serif; }
+.brand-sub { color: #8A8F86; font-size: 13px; margin-top: 6px; }
+
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 12px; color: #8A8F86; margin-bottom: 6px; }
+.field input { width: 100%; }
+.code-row { display: flex; gap: 10px; }
+.code-row input { flex: 1; }
+.wide { width: 100%; margin-top: 8px; }
+.msg { text-align: center; color: #B4553F; font-size: 13px; margin-top: 14px; min-height: 18px; }
+
+/* ---------- 主界面 ---------- */
+.main { height: 100%; display: flex; flex-direction: column; }
+.topbar {
+  display: flex; align-items: center;
+  padding: 16px 28px;
+  border-bottom: 1px solid #E3E4DE;
+  background: #FAFAF7;
+}
+.app-title { font-size: 20px; font-weight: 700; font-family: "Songti SC", serif; }
+.status { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #8A8F86; }
+.status .dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot.on { background: #2FA97B; box-shadow: 0 0 0 4px rgba(47,169,123,.15); }
+.dot.off { background: #C8CBC4; }
+.topbar .btn { margin-left: 20px; }
+
+.content { flex: 1; overflow: auto; padding: 20px 28px; }
+.card {
+  background: #fff;
+  border: 1px solid #E3E4DE;
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+
+.account { display: flex; align-items: center; }
+.acc-left { flex: 1; }
+.acc-right { display: flex; gap: 10px; }
+.acc-info { font-size: 14px; color: #20221F; }
+
+.dir-row { display: flex; gap: 10px; }
+.dir-row input { flex: 1; }
+
+.columns { display: flex; gap: 14px; flex: 1; }
+.columns .card { flex: 1; display: flex; flex-direction: column; }
+.col-books { flex: 3; }
+.col-logs { flex: 2; }
+.col-head { display: flex; align-items: center; justify-content: space-between; }
+.col-head .count { font-size: 12px; color: #8A8F86; }
+
+.book-list { list-style: none; flex: 1; overflow: auto; }
+.book-list li {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.book-list li:hover { background: #F0F1EB; }
+.book-list li.empty { color: #B8BBB2; }
+
+.logs { flex: 1; overflow: auto; background: #FBFAF5; border-radius: 8px; padding: 10px; }
+.log-line {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  color: #40433F;
+  padding: 2px 0;
+  border-bottom: 1px dashed #EEE;
+  word-break: break-all;
+}
