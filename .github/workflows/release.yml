@@ -2,8 +2,9 @@ name: Build & Release
 
 on:
   push:
-    tags:
-      - "v*"
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -95,11 +96,24 @@ jobs:
       - name: List artifacts
         run: ls -R artifacts
 
-      - uses: softprops/action-gh-release@v2
+      - name: Publish versioned release (v* tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
         with:
           name: ReaMicroPC ${{ github.ref_name }}
           draft: false
           prerelease: false
           files: |
-            artifacts/ReaMicroPC-macOS/ReaMicroPC-macOS-universal.zip
-            artifacts/ReaMicroPC-Windows/ReaMicroPC-Windows-amd64.zip
+            artifacts/ReaMicroPC-macOS/*.zip
+            artifacts/ReaMicroPC-Windows/*.zip
+
+      - name: Publish latest release (push to main)
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create latest \
+            --title "阅微 PC 同步 - 最新版 ($(date -u +%Y-%m-%d))" \
+            --notes "自动构建于 commit ${{ github.sha }}（${{ github.ref_name }} 分支）。macOS/Windows 均为未签名构建。" \
+            artifacts/ReaMicroPC-macOS/*.zip artifacts/ReaMicroPC-Windows/*.zip
