@@ -1,0 +1,105 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    name: macOS (universal)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+          cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Wails CLI
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.13.0
+
+      - name: Build (darwin/universal)
+        run: wails build -clean -platform darwin/universal -trimpath
+
+      - name: Package .app
+        run: |
+          cd build/bin
+          ditto -c -k --sequesterRsrc --keepParent ReaMicroPC.app ../../ReaMicroPC-macOS-universal.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ReaMicroPC-macOS
+          path: ReaMicroPC-macOS-universal.zip
+          if-no-files-found: error
+
+  build-windows:
+    name: Windows (amd64)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+          cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install MinGW (CGO)
+        run: choco install mingw -y --no-progress
+
+      - name: Install Wails CLI
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.13.0
+
+      - name: Build (windows/amd64)
+        run: wails build -clean -platform windows/amd64 -trimpath
+
+      - name: Package exe
+        shell: bash
+        run: |
+          cd build/bin
+          tar -a -cf ../../ReaMicroPC-Windows-amd64.zip ReaMicroPC.exe
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ReaMicroPC-Windows
+          path: ReaMicroPC-Windows-amd64.zip
+          if-no-files-found: error
+
+  release:
+    name: Create GitHub Release
+    needs: [build-macos, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: List artifacts
+        run: ls -R artifacts
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: ReaMicroPC ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          files: |
+            artifacts/ReaMicroPC-macOS/ReaMicroPC-macOS-universal.zip
+            artifacts/ReaMicroPC-Windows/ReaMicroPC-Windows-amd64.zip
